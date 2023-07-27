@@ -416,7 +416,7 @@ class RenderTable extends RenderBox {
   // Children are stored in row-major order.
   // _children.length must be rows * columns
 
-  DxTableController _dxTableController;
+  final DxTableController _dxTableController;
   List<RenderBox?> _children = const <RenderBox?>[];
 
   /// The number of vertical alignment lines in this table.

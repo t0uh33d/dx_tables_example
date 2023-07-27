@@ -18,15 +18,31 @@ class DxTableHeader {
     this.headerHeight = 50,
   });
 
-  TableRow get _build => TableRow(
+  // TableRow get _build => TableRow(
+  //       decoration: BoxDecoration(
+  //         color: backgroundColor,
+  //         borderRadius: borderRadius,
+  //       ),
+  //       children: [
+  //         ...List.generate(titles.length,
+  //             (index) => titles[index]._build(headerHeight, index)),
+  //       ],
+  //     );
+
+  Widget _buildRow(List<double> width) => Container(
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: borderRadius,
         ),
-        children: [
-          ...List.generate(titles.length,
-              (index) => titles[index]._build(headerHeight, index)),
-        ],
+        child: Row(
+          children: [
+            ...List.generate(
+              titles.length,
+              (index) =>
+                  titles[index]._build(headerHeight, index, width[index]),
+            ),
+          ],
+        ),
       );
 }
 
@@ -40,7 +56,6 @@ class DxHeaderElement<T> {
   final Color? backgroundColor;
   final Alignment? align;
   final DxHeaderElementBuilder builder;
-  final double? width;
   final DxTableSortMechanism<T>? sortingMechanism;
 
   DxHeaderElement({
@@ -48,7 +63,6 @@ class DxHeaderElement<T> {
     this.backgroundColor,
     this.align = Alignment.center,
     required this.builder,
-    this.width,
     this.sortingMechanism,
   });
 
@@ -60,7 +74,7 @@ class DxHeaderElement<T> {
     _context = context;
   }
 
-  Widget _build(double h, int index) => Container(
+  Widget _build(double h, int index, double width) => Container(
         color: backgroundColor,
         height: h,
         padding: padding,

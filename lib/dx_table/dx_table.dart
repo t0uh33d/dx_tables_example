@@ -85,10 +85,6 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
       shouldFilter: widget.enableFilter,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _renderStickyHeader();
-    });
-
     super.initState();
   }
 
@@ -96,24 +92,27 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
     setState(() {});
   }
 
-  void _renderStickyHeader() {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) {
-        return Row(
-          children: widget.dxTableController._columnWidths
-              .map((e) => Container(
-                    height: widget.dxTableController._rowHeight,
-                    width: e,
-                    color: Colors.primaries[
-                        Random().nextInt(Colors.primaries.length - 1)],
-                  ))
-              .toList(),
-        );
-      },
-    );
+  // void _renderStickyHeader() {
+  //   OverlayEntry overlayEntry = OverlayEntry(
+  //     builder: (context) {
+  //       return Positioned(
+  //         top: 0,
+  //         child: Row(
+  //           children: widget.dxTableController._columnWidths
+  //               .map((e) => Container(
+  //                     height: widget.dxTableController._rowHeight,
+  //                     width: e,
+  //                     color: Colors.primaries[
+  //                         Random().nextInt(Colors.primaries.length - 1)],
+  //                   ))
+  //               .toList(),
+  //         ),
+  //       );
+  //     },
+  //   );
 
-    Overlay.of(context).insert(overlayEntry);
-  }
+  //   Overlay.of(context).insert(overlayEntry);
+  // }
 
   @override
   void dispose() {
@@ -121,17 +120,28 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  final ValueNotifier<List<double>?> _columnWidths =
+      ValueNotifier<List<double>?>(null);
+
+  void _buildStickyHeader() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _columnWidths.value = widget.dxTableController._columnWidths;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          margin: widget.margin,
-          height: widget.height,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
+    _buildStickyHeader();
+    return Container(
+      margin: widget.margin,
+      height: widget.height,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Stack(
+          children: [
+            Container(
               width: widget.tableWidth,
+              margin: EdgeInsets.only(top: widget.header.headerHeight),
               child: AnimatedBuilder(
                   animation: animationController,
                   builder: (context, _) {
@@ -142,7 +152,6 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
                         defaultColumnWidth: widget.tableColumnWidth,
                         columnWidths: widget.columnWidthMap,
                         children: [
-                          // widget.dxTableController._dxTableHeader._build,
                           ...widget.dxTableController._filteredRows.map(
                             (e) => e._build,
                           ),
@@ -152,9 +161,16 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
                     );
                   }),
             ),
-          ),
+            ValueListenableBuilder<List<double>?>(
+              valueListenable: _columnWidths,
+              builder: (context, arr, _) {
+                if (arr == null) return const SizedBox();
+                return widget.dxTableController._dxTableHeader._buildRow(arr);
+              },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
