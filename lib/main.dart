@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dx_tables/data/player_data_model.dart';
 import 'package:dx_tables/data/table_data.dart';
 import 'package:dx_tables/dx_table/dx_table.dart';
@@ -38,7 +40,7 @@ class _MainAppState extends State<MainApp> {
             animationDuration: const Duration(microseconds: 0),
             header: DxTableHeader(
               titleAlignment: Alignment.centerLeft,
-              backgroundColor: Colors.deepPurple,
+              backgroundColor: Colors.red,
               titles:
                   TableData.headerTitles.map((e) => _headerElement(e)).toList(),
             ),
@@ -53,6 +55,8 @@ class _MainAppState extends State<MainApp> {
   DxHeaderElement _headerElement(String title) {
     return DxHeaderElement(
       align: Alignment.centerLeft,
+      backgroundColor:
+          Colors.primaries[Random().nextInt(Colors.primaries.length - 1)],
       builder: (context, sortState, index) {
         return Text(
           title,

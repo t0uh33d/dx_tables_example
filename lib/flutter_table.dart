@@ -4,17 +4,13 @@
 
 import 'dart:collection';
 
+import 'package:dx_tables/dx_table/dx_table.dart';
+import 'package:dx_tables/rendering_tabel.dart';
+import 'package:dx_tables/rendering_table_border.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-
-// import 'basic.dart';
-// import 'debug.dart';
-// import 'framework.dart';
-// import 'image.dart';
-
-export 'package:flutter/rendering.dart'
-    show
+// import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart'
+    hide
         FixedColumnWidth,
         FlexColumnWidth,
         FractionColumnWidth,
@@ -24,6 +20,23 @@ export 'package:flutter/rendering.dart'
         TableBorder,
         TableCellVerticalAlignment,
         TableColumnWidth;
+
+// import 'basic.dart';
+// import 'debug.dart';
+// import 'framework.dart';
+// import 'image.dart';
+
+// export 'package:flutter/rendering.dart'
+//     show
+//         FixedColumnWidth,
+//         FlexColumnWidth,
+//         FractionColumnWidth,
+//         IntrinsicColumnWidth,
+//         MaxColumnWidth,
+//         MinColumnWidth,
+//         TableBorder,
+//         TableCellVerticalAlignment,
+//         TableColumnWidth;
 
 /// A horizontal group of cells in a [Table].
 ///
@@ -126,6 +139,7 @@ class Table extends RenderObjectWidget {
     this.border,
     this.defaultVerticalAlignment = TableCellVerticalAlignment.top,
     this.textBaseline, // NO DEFAULT: we don't know what the text's baseline should be
+    required this.dxTableController,
   })  : assert(
             defaultVerticalAlignment != TableCellVerticalAlignment.baseline ||
                 textBaseline != null,
@@ -242,6 +256,8 @@ class Table extends RenderObjectWidget {
 
   final List<Decoration?>? _rowDecorations;
 
+  final DxTableController dxTableController;
+
   @override
   RenderObjectElement createElement() => _TableElement(this);
 
@@ -259,6 +275,7 @@ class Table extends RenderObjectWidget {
       configuration: createLocalImageConfiguration(context),
       defaultVerticalAlignment: defaultVerticalAlignment,
       textBaseline: textBaseline,
+      dxTableController: dxTableController,
     );
   }
 

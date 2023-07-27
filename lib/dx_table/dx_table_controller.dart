@@ -19,6 +19,10 @@ class DxTableController {
   late DxRowClickCallback? _dxRowClickCallback;
   late void Function()? _onSelectStateUpdator;
 
+  // table computation data
+  late List<double> _columnWidths;
+  late double _rowHeight;
+
   void _init(
     AnimationController animationController,
     DxRowClickCallback? dxRowClickCallback,
@@ -27,6 +31,14 @@ class DxTableController {
     _animationController = animationController;
     _dxRowClickCallback = dxRowClickCallback;
     _onSelectStateUpdator = onSelectStateUpdator;
+  }
+
+  void setTableComputationData({
+    required List<double> columnWidths,
+    required double rowHeight,
+  }) {
+    _columnWidths = columnWidths;
+    _rowHeight = rowHeight;
   }
 
   bool _built = false;

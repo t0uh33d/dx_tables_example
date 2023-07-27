@@ -3,7 +3,17 @@ library dx_table;
 
 // import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:dx_tables/flutter_table.dart';
+import 'package:dx_tables/rendering_tabel.dart';
+import 'package:flutter/material.dart'
+    hide
+        Table,
+        TableRow,
+        TableCellVerticalAlignment,
+        TableColumnWidth,
+        IntrinsicColumnWidth;
 
 part 'dx_table_controller.dart';
 part 'dx_table_header.dart';
@@ -75,11 +85,34 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
       shouldFilter: widget.enableFilter,
     );
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _renderStickyHeader();
+    });
+
     super.initState();
   }
 
   void _refresh() {
     setState(() {});
+  }
+
+  void _renderStickyHeader() {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Row(
+          children: widget.dxTableController._columnWidths
+              .map((e) => Container(
+                    height: widget.dxTableController._rowHeight,
+                    width: e,
+                    color: Colors.primaries[
+                        Random().nextInt(Colors.primaries.length - 1)],
+                  ))
+              .toList(),
+        );
+      },
+    );
+
+    Overlay.of(context).insert(overlayEntry);
   }
 
   @override
@@ -109,11 +142,12 @@ class _DxTableState extends State<DxTable> with SingleTickerProviderStateMixin {
                         defaultColumnWidth: widget.tableColumnWidth,
                         columnWidths: widget.columnWidthMap,
                         children: [
-                          widget.dxTableController._dxTableHeader._build,
+                          // widget.dxTableController._dxTableHeader._build,
                           ...widget.dxTableController._filteredRows.map(
                             (e) => e._build,
                           ),
                         ],
+                        dxTableController: widget.dxTableController,
                       ),
                     );
                   }),
